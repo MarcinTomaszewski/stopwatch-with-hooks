@@ -68,9 +68,9 @@ const App = () => {
   return (
     <div className="App">
       <nav>
-        <button onClick={() => start()}>Start</button>
-        <button onClick={() => stop()}>Stop</button>
-        <button onClick={() => resetTime()}>Reset</button>
+        <button onClick={start}>Start</button>
+        <button onClick={stop}>Stop</button>
+        <button onClick={resetTime}>Reset</button>
       </nav>
       <div>
         <div>{stopwatch}</div>
