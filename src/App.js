@@ -1,35 +1,61 @@
-import React, { Component } from "react";
+import React from "react";
+import { useState } from "react";
 import "./App.css";
 
-class App extends Component {
-  state = {
-    time: {
+const App = () => {
+  const [running, setStart] = useState(false);
+  const [time, setTime] = useState({ minutes: 0, seconds: 0, miliseconds: 0 });
+  const [watch, setWatch] = useState();
+
+  console.log(time);
+
+  const resetTime = () => {
+    setStart(false);
+    setTime({
       minutes: 0,
       seconds: 0,
       miliseconds: 0
-    },
-    running: false
-  };
-
-  reset = () => {
-    this.setState({
-      time: {
-        minutes: 0,
-        seconds: 0,
-        miliseconds: 0
-      },
-      running: false
     });
+    clearInterval(watch);
   };
 
-  start = () => {
-    if (!this.state.running) {
-      this.setState({ running: true });
-      this.watch = setInterval(() => this.step(), 10);
+  const start = () => {
+    if (!running) {
+      setStart(true);
+      setWatch(setInterval(() => calculate(), 10));
     }
   };
 
-  pad0 = value => {
+  const stop = () => {
+    setStart(false);
+    clearInterval(watch);
+  };
+
+  // const step = () => {
+  //   if (running) {
+  //     calculate();
+  //   }
+  // };
+
+  const calculate = () => {
+    setTime({ ...time, miliseconds: (time.miliseconds += 1) });
+    if (time.miliseconds >= 100) {
+      setTime({ ...time, seconds: (time.seconds += 1) });
+      setTime({ ...time, miliseconds: (time.miliseconds = 0) });
+    }
+    if (time.seconds >= 60) {
+      setTime({ ...time, minutes: (time.minutes += 1) });
+      setTime({ ...time, seconds: (time.seconds = 0) });
+    }
+    setTime({
+      ...time,
+      miliseconds: time.miliseconds,
+      seconds: time.seconds,
+      minutes: time.minutes
+    });
+  };
+
+  const pad0 = value => {
     let result = value.toString();
     if (result.length < 2) {
       result = "0" + result;
@@ -37,53 +63,23 @@ class App extends Component {
     return result;
   };
 
-  stop = () => {
-    this.setState({ running: false });
-    clearInterval(this.watch);
-  };
+  const stopwatch = `${pad0(time.minutes)}:${pad0(time.seconds)}:${pad0(
+    Math.floor(time.miliseconds)
+  )}`;
 
-  step() {
-    if (this.state.running) {
-      this.calculate();
-    }
-  }
-
-  calculate() {
-    const { time } = this.state;
-
-    const newTime = time;
-    newTime.miliseconds += 1;
-    if (newTime.miliseconds >= 100) {
-      newTime.seconds += 1;
-      newTime.miliseconds = 0;
-    }
-    if (newTime.seconds >= 60) {
-      newTime.minutes += 1;
-      newTime.seconds = 0;
-    }
-
-    this.setState({ time: newTime });
-  }
-
-  render() {
-    const { minutes, seconds, miliseconds } = this.state.time;
-    const stopwatch = `${this.pad0(minutes)}:${this.pad0(seconds)}:${this.pad0(
-      Math.floor(miliseconds)
-    )}`;
-    return (
-      <div className="App">
-        <nav>
-          <button onClick={() => this.start()}>Start</button>
-          <button onClick={() => this.stop()}>Stop</button>
-          <button onClick={() => this.reset()}>Reset</button>
-        </nav>
-        <div>
-          <div>{stopwatch}</div>
-        </div>
-        <ul />
+  return (
+    <div className="App">
+      <nav>
+        <button onClick={() => start()}>Start</button>
+        <button onClick={() => stop()}>Stop</button>
+        <button onClick={() => resetTime()}>Reset</button>
+      </nav>
+      <div>
+        <div>{stopwatch}</div>
       </div>
-    );
-  }
-}
+      <ul />
+    </div>
+  );
+};
 
 export default App;
