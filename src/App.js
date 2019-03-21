@@ -40,12 +40,18 @@ const App = () => {
   const calculate = () => {
     setTime({ ...time, miliseconds: (time.miliseconds += 1) });
     if (time.miliseconds >= 100) {
-      setTime({ ...time, seconds: (time.seconds += 1) });
-      setTime({ ...time, miliseconds: (time.miliseconds = 0) });
+      setTime({
+        ...time,
+        seconds: (time.seconds += 1),
+        miliseconds: (time.miliseconds = 0)
+      });
     }
     if (time.seconds >= 60) {
-      setTime({ ...time, minutes: (time.minutes += 1) });
-      setTime({ ...time, seconds: (time.seconds = 0) });
+      setTime({
+        ...time,
+        minutes: (time.minutes += 1),
+        seconds: (time.seconds = 0)
+      });
     }
     setTime({
       ...time,
